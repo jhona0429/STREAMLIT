@@ -5,6 +5,7 @@ getcontext().prec = 28
 FEE_RATE = Decimal("0.014")
 FEE_FIXED = Decimal("0.30")
 MIN_PAYOUT = Decimal("1.00")
+MIN_FX_RATE = Decimal("0.0001")
 
 def _dec(x):
     return x if isinstance(x, Decimal) else Decimal(str(x))
@@ -13,8 +14,8 @@ def convert(amount: float, fx_rate: float) -> Decimal:
     amount = _dec(amount)
     fx_rate = _dec(fx_rate)
 
-    if amount <= 0 or fx_rate <= 0:
-        raise ValueError("Amount and FX rate must be greater than zero")
+    if amount <= 0 or fx_rate < MIN_FX_RATE:
+        raise ValueError("Amount must be > 0 and FX rate must be ≥ 0.0001")
 
     gross = amount * fx_rate
     fee = gross * FEE_RATE + FEE_FIXED
